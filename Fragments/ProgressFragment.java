@@ -71,6 +71,7 @@ public class ProgressFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                      food = Integer.parseInt(String.valueOf(ds.child("Food").child("total").getValue()));
+                     //Log.d("Chart",String.valueOf(food));
                     //int transportation = Integer.parseInt(String.valueOf(ds.child("Transportation").child("total").getValue()));
                    // int energy = Integer.parseInt(String.valueOf(ds.child("Energy").child("total").getValue()));
                     //sectors.put("Food", food);
@@ -92,21 +93,20 @@ public class ProgressFragment extends Fragment {
     public ArrayList<String> getXvalues()
     {
       ArrayList<String> xValues = new ArrayList<>();
-      xValues.add("Mon");
-      xValues.add("Tue");
-      xValues.add("Wed");
+      xValues.add("Food");
+      xValues.add("Transportation");
+      xValues.add("Energy");
       return xValues;
     }
     public ArrayList<BarDataSet> getBarvalues()
-    {   ArrayList<BarDataSet> barDataSets = new ArrayList<>();
+    {
+        Log.d("Progress Fragment",String.valueOf(food));
+        ArrayList<BarDataSet> barDataSets = new ArrayList<>();
         ArrayList<BarEntry> barEntries = new ArrayList<>();
-        BarEntry one = new BarEntry(2.0f,0);
-        BarEntry two = new BarEntry(4.0f,1);
-        BarEntry three = new BarEntry(5.0f,2);
+        BarEntry one = new BarEntry(food,0);
+
         barEntries.add(one);
-        barEntries.add(two);
-        barEntries.add(three);
-        BarDataSet barDataSet1 = new BarDataSet(barEntries,"Week Dates");
+        BarDataSet barDataSet1 = new BarDataSet(barEntries,"Sectors");
         barDataSets.add(barDataSet1);
         return barDataSets;
 
