@@ -71,26 +71,42 @@ public class ProgressFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
                      food = Integer.parseInt(String.valueOf(ds.child("Food").child("total").getValue()));
+
                      //Log.d("Chart",String.valueOf(food));
                     //int transportation = Integer.parseInt(String.valueOf(ds.child("Transportation").child("total").getValue()));
                    // int energy = Integer.parseInt(String.valueOf(ds.child("Energy").child("total").getValue()));
                     //sectors.put("Food", food);
-
+                     getChart(food);
                    // sectors.put("transportation", transportation);
                   //  sectors.put("energy", energy);
                 }
             }
+
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
 
             }
         });
-        barData = new BarData(getXvalues(),getBarvalues());
-        barChart.setData(barData);
-
         return v;
     }
-    public ArrayList<String> getXvalues()
+    public void getChart(Float food)
+    {
+        ArrayList<String> xValues = new ArrayList<>();
+        xValues.add("Food");
+        xValues.add("Transportation");
+        xValues.add("Energy");
+        Log.d("Progress Fragment",String.valueOf(food));
+        ArrayList<BarDataSet> barDataSets = new ArrayList<>();
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        BarEntry one = new BarEntry(food,0);
+        barEntries.add(one);
+        BarDataSet barDataSet1 = new BarDataSet(barEntries,"Sectors");
+        barDataSets.add(barDataSet1);
+        barData = new BarData(xValues,barDataSets);
+        barChart.setData(barData);
+        //return barDataSets;
+    }
+    /**public ArrayList<String> getXvalues()
     {
       ArrayList<String> xValues = new ArrayList<>();
       xValues.add("Food");
@@ -98,13 +114,13 @@ public class ProgressFragment extends Fragment {
       xValues.add("Energy");
       return xValues;
     }
-    public ArrayList<BarDataSet> getBarvalues()
+    public ArrayList<BarDataSet> getBarvalues(Float food)
     {
+
         Log.d("Progress Fragment",String.valueOf(food));
         ArrayList<BarDataSet> barDataSets = new ArrayList<>();
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         BarEntry one = new BarEntry(food,0);
-
         barEntries.add(one);
         BarDataSet barDataSet1 = new BarDataSet(barEntries,"Sectors");
         barDataSets.add(barDataSet1);
@@ -125,6 +141,12 @@ public class ProgressFragment extends Fragment {
         }
         }
     }
-     **/
 
+
+    public void getChart()
+    {
+        barData = new BarData(getXvalues(),getBarvalues(food));
+        barChart.setData(barData);
+    }
+    **/
 }
