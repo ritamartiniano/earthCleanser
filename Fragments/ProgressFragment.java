@@ -9,14 +9,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
+
 import com.example.ritamartiniano.earthcleanser.R;
+import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import com.github.mikephil.charting.components.AxisBase;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.DataSet;
-import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+//import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,29 +33,35 @@ import com.google.firebase.database.ValueEventListener;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 
 public class ProgressFragment extends Fragment {
-    HorizontalBarChart barChart;
+    BarChart barChart;
+    BarData barData;
     DatabaseReference database;
     FirebaseUser mAuth;
-    HashMap<String,Integer> sectors;
-    public static ProgressFragment newInstance()
-    {
+
+    public HashMap<String, Integer> sectors;
+    float food;
+    public static ProgressFragment newInstance() {
         ProgressFragment progFg = new ProgressFragment();
         return progFg;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sectors = new HashMap<>();
 
     }
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
-    {
-        View v = inflater.inflate(R.layout.fragment_progress,container, false);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance) {
+        View v = inflater.inflate(R.layout.fragment_progress, container, false);
         barChart = v.findViewById(R.id.barChart);
-        setData(3,50);
         mAuth = FirebaseAuth.getInstance().getCurrentUser();
         String user = mAuth.getUid();
         database = FirebaseDatabase.getInstance().getReference("Points");
@@ -58,14 +69,14 @@ public class ProgressFragment extends Fragment {
         database.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                     food = Integer.parseInt(String.valueOf(ds.child("Food").child("total").getValue()));
+                    //int transportation = Integer.parseInt(String.valueOf(ds.child("Transportation").child("total").getValue()));
+                   // int energy = Integer.parseInt(String.valueOf(ds.child("Energy").child("total").getValue()));
+                    //sectors.put("Food", food);
 
-                for(DataSnapshot ds : dataSnapshot.getChildren())
-                {    int food = Integer.parseInt(String.valueOf(ds.child("Food").child("total").getValue()));
-                     int transportation = Integer.parseInt(String.valueOf(ds.child("Transportation").child("total").getValue()));
-                     int energy = Integer.parseInt(String.valueOf(ds.child("Energy").child("total").getValue()));
-                    sectors.put("Food",food);
-                    sectors.put("transportation",transportation);
-                    sectors.put("energy",energy);
+                   // sectors.put("transportation", transportation);
+                  //  sectors.put("energy", energy);
                 }
             }
             @Override
@@ -73,26 +84,47 @@ public class ProgressFragment extends Fragment {
 
             }
         });
-       return v;
+        barData = new BarData(getXvalues(),getBarvalues());
+        barChart.setData(barData);
+
+        return v;
     }
-    private void setData(int count, int range)
+    public ArrayList<String> getXvalues()
     {
-        ArrayList<BarEntry> yVals = new ArrayList<>();
-        float barWidth = 3f;
-        float spaceforBar = 10f;
-        for(int i=0;i<count;i++)
-        {   //set points for actions
-            float val = (float)(Math.random()*range);
-            for(int j =0;j<sectors.size();j++)
-            {
-                yVals.add(new BarEntry(i+spaceforBar,j));
-            }
-           // yVals.add(new BarEntry(i+spaceforBar,val));
-        }
-        BarDataSet set1;
-        set1 = new BarDataSet(yVals,"Data Set 1");
-        BarData data = new BarData(set1);
-        data.setBarWidth(barWidth);
-        barChart.setData(data);
+      ArrayList<String> xValues = new ArrayList<>();
+      xValues.add("Mon");
+      xValues.add("Tue");
+      xValues.add("Wed");
+      return xValues;
     }
+    public ArrayList<BarDataSet> getBarvalues()
+    {   ArrayList<BarDataSet> barDataSets = new ArrayList<>();
+        ArrayList<BarEntry> barEntries = new ArrayList<>();
+        BarEntry one = new BarEntry(2.0f,0);
+        BarEntry two = new BarEntry(4.0f,1);
+        BarEntry three = new BarEntry(5.0f,2);
+        barEntries.add(one);
+        barEntries.add(two);
+        barEntries.add(three);
+        BarDataSet barDataSet1 = new BarDataSet(barEntries,"Week Dates");
+        barDataSets.add(barDataSet1);
+        return barDataSets;
+
+    }
+    /**public void setData(int count, float range)
+    {
+        float start = 1f;
+        ArrayList<BarEntry> values = new ArrayList<>();
+        for(int i = (int) start; i < start + count;i++) {
+            float val = (float) Math.random() * (range + 1);
+
+            if(Math.random() * 100< 25)
+            {
+                values.add(new BarEntry(i, val, ))
+            }
+        }
+        }
+    }
+     **/
+
 }
