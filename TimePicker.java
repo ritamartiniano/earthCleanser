@@ -19,7 +19,6 @@ public class TimePicker extends DialogFragment implements TimePickerDialog.OnTim
         int min = c.get(Calendar.MINUTE);
         return new TimePickerDialog(getActivity(),(TimePickerDialog.OnTimeSetListener)getActivity(), hour, min, android.text.format.DateFormat.is24HourFormat(getActivity()));
     }
-
     @Override
     public void onTimeSet(android.widget.TimePicker timePicker, int i, int i1) {
 

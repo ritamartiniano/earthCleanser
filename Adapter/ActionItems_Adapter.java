@@ -139,10 +139,10 @@ public class ActionItems_Adapter extends RecyclerView.Adapter<ActionItems_Adapte
             public void onTimeSet(TimePicker timePicker, int i, int i1) {
                 //calculate delay from current time since boot and selected time = delay
                  long chosenTime = mCurrentTime.getTimeInMillis();
-
-                 Log.d("TimePicker",Integer.toString(i) + "" + Integer.toString(i1));
+                 Log.d("TimePicker",Long.toString(mCurrentTime.getTimeInMillis()));
                  Log.d("Current Time",Long.toString(System.currentTimeMillis()));
-                //scheduleNotification(c,delay,1);
+                 long delay = chosenTime - System.currentTimeMillis();
+                 scheduleNotification(c,delay,1);
             }
         },hour,min,true);
         timePickerDialog.show();
