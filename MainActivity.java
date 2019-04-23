@@ -57,6 +57,10 @@ public class MainActivity extends AppCompatActivity {
             case R.id.add:
                 Intent addAction = new Intent(MainActivity.this,CreateAction.class);
                 MainActivity.this.startActivity(addAction);
+            case R.id.carDetails:
+                Intent carDetails = new Intent(MainActivity.this,InputCarDetails.class);
+                MainActivity.this.startActivity(carDetails);
+
         }
         return true;
     }

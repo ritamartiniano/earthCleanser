@@ -152,7 +152,8 @@ public class ActionItems_Adapter extends RecyclerView.Adapter<ActionItems_Adapte
     {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(c.getApplicationContext()).
                 setContentTitle("Earth Cleanser").
-                setContentText("It's time to take an action!!");
+                setContentText("It's time to take an action!!").
+                setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         Intent intent = new Intent(c,ActionItems_Adapter.class);
         PendingIntent activity = PendingIntent.getActivity(c,notificationId,intent,PendingIntent.FLAG_CANCEL_CURRENT );
@@ -163,9 +164,10 @@ public class ActionItems_Adapter extends RecyclerView.Adapter<ActionItems_Adapte
         notificationIntent.putExtra(MyNotificationPublisher.NOTIFICATION,notification);
 
         PendingIntent pendingIntent = PendingIntent.getBroadcast(c,notificationId,notificationIntent, PendingIntent.FLAG_CANCEL_CURRENT);
-        long futureInMills = SystemClock.elapsedRealtime() + delay;
+        long futureInMills = SystemClock.currentThreadTimeMillis() + delay;
         AlarmManager alarmManager = (AlarmManager) c.getSystemService(c.ALARM_SERVICE);
         alarmManager.set(AlarmManager.ELAPSED_REALTIME_WAKEUP,futureInMills,pendingIntent);
-        }
+
+    }
 
 }

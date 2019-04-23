@@ -12,8 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-
-
+import java.io.FileInputStream;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -33,15 +32,21 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 public class FeedFragment extends Fragment {
 
-    TextView txtOrigin, txtDestination;
+    TextView txtOrigin, txtDestination,advisedSpeed;
     Button calculateDist;
     private RecyclerView actions;
     private RecyclerView.Adapter actionsAdapter;
     private RecyclerView.LayoutManager layoutManager;
     ArrayList<MediaActions> items;
+
     private DatabaseReference getActions;
     private static  String REQUEST1 = "https://maps.googleapis.com/maps/api/distancematrix/json?units=imperial&origins=";
     private static  String REQUEST2 = "&destinations=";
@@ -60,9 +65,25 @@ public class FeedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         View v = inflater.inflate(R.layout.fragment_feed,container, false);
+        ArrayList<String> details = null;
+        try {
+            FileInputStream inputStream = getContext().openFileInput("carDetails");
+            ObjectInputStream in = new ObjectInputStream(inputStream);
+            Object d  = in.readObject();
+            in.close();
+            inputStream.close();
+            Log.d("Object",d.toString());
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
         actions = v.findViewById(R.id.actions);
         txtOrigin = v.findViewById(R.id.txtOrigin);
         txtDestination = v.findViewById(R.id.txtDestination);
+        advisedSpeed = v.findViewById(R.id.advisedSpeed);
         calculateDist = v.findViewById(R.id.calcDist);
         calculateDist.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,7 +107,6 @@ public class FeedFragment extends Fragment {
                     actionsAdapter = new MediaDisplayAdapter(getActivity(),items);
                     actions.setAdapter(actionsAdapter);
                 }
-
             }
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
@@ -130,15 +150,42 @@ public class FeedFragment extends Fragment {
 
     MySingleton.getInstance(getActivity()).addToRequestQueue(request);
     }
-  /** public double calculateSpeed(double distance, int time)
+    public double calculateSpeed(double distance, int time)
     {
         Double speed = distance/time;
-   //get the amount of carbon emited per petrol and diesel
-   //slow down the speed per 10%
-   //and calculate the amount of emissions per galon used
-   //reduce the velocity by 10%
-        return
+
+        return speed;
+
+    }
+    public void double emissionfromNormalSpeed(double mpg,double distance,String fuel)
+    {   //check the emission factors for each fuel for litres
+        Double gallons = distance / mpg;
+        if(fuel =="diesel")
+        {
+            Double emission = gallons * 2.13;
+        }
+        else if(fuel == "petrol")
+        {
+            Double emission = gallons * 1.45;
+        }
+
+    }
+    /**
+    public double calculateOptimalSpeed()
+    {
+        calculateSpeed();
+        //if speed is below 55 do this
+        //if speed is between 55 and < 60 do this
+        //if speed is between > 60 and < 65 do this
+        //
     }
 
-    **/
+
+    public double calculateEmissionfromOptimalSpeed(double mpg,double )
+    {
+        //
+
+    }
+
+**/
 }
