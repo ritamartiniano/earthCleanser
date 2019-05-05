@@ -209,7 +209,7 @@ public class FeedFragment extends Fragment {
             }
             else if(speed>65&&speed<=70)
             {
-                optimalSpeed = 70;
+                optimalSpeed = 65;
             }
         }
         if(speed<55)
