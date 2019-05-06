@@ -223,7 +223,7 @@ public class FeedFragment extends Fragment {
                 if(optimalSpeed == 60)
                 {
                     double value = (0.03*mpg)/100;
-                    mpg = mpg + value;
+                    mpg = mpg - value;
                     double p = ((mpg*1.61) * 100)/4.5461;
                     //do modifications to the switch statement
                     double litres = p * distance/100;
@@ -241,7 +241,7 @@ public class FeedFragment extends Fragment {
                 else if(optimalSpeed == 65)
                 {
                     double value = (0.08*mpg)/100;
-                    mpg = mpg + value;
+                    mpg = mpg - value;
                     double p = ((mpg*1.61)*100)/4.5461;
                     double litres = p * distance/100;
                     switch(fuel)
@@ -257,7 +257,7 @@ public class FeedFragment extends Fragment {
                 else if(optimalSpeed == 70)
                 {
                     double value = (0.17*mpg)/100;
-                    mpg = mpg + value;
+                    mpg = mpg - value;
                     double p = ((mpg*1.61)*100)/4.5461;
                     double litres = p * distance/100;
                     switch(fuel)
