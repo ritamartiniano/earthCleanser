@@ -274,7 +274,7 @@ public class FeedFragment extends Fragment {
     }
     public double calculateDifference(double emission1, double emission2)
     {
-        Double saving = emission1-emission2;
+        Double saving = emission2-emission1;
         return saving;
     }
 
