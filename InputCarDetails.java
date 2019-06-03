@@ -1,12 +1,15 @@
 package com.example.ritamartiniano.earthcleanser;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -44,9 +47,15 @@ public class InputCarDetails extends AppCompatActivity {
                 if(gasType!= null && mpg != null)
                 {
                     HashMap<String,Object> carDetails = new HashMap<>();
-                    carDetails.put("GasType",gasType);
-                    carDetails.put("MPG",mpg);
-                    databaseReference.setValue(carDetails);
+                    carDetails.put("GasType",gasType.getText().toString());
+                    carDetails.put("MPG",mpg.getText().toString());
+                    databaseReference.updateChildren(carDetails).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(InputCarDetails.this,"Car Details saved successfully",Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(InputCarDetails.this,MainActivity.class));
+                        }
+                    });
                 }
                 else if(gasType==null)
                 {

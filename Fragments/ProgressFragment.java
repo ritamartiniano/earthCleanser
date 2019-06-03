@@ -73,9 +73,11 @@ public class ProgressFragment extends Fragment {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 for (DataSnapshot ds : dataSnapshot.getChildren()) {
+
                      food = Integer.parseInt(String.valueOf(ds.child("Food").child("total").getValue()));
                      transportation = Integer.parseInt(String.valueOf(ds.child("Transportation").child("total").getValue()));
                      energy = Integer.parseInt(String.valueOf(ds.child("Energy").child("total").getValue()));
+
                      getBarChart(food,transportation,energy);
                 }
             }

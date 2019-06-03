@@ -1,4 +1,5 @@
 package com.example.ritamartiniano.earthcleanser.Fragments;
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
@@ -40,6 +41,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -114,7 +116,7 @@ public class FeedFragment extends Fragment {
                         JSONArray rows = response.getJSONArray("rows");
                         JSONObject elements = rows.getJSONObject(0);
                         JSONArray strings = elements.getJSONArray("elements");
-                        JSONObject data = strings.getJSONObject(0);
+                        final JSONObject data = strings.getJSONObject(0);
                         JSONObject values = data.getJSONObject("distance");
                         JSONObject secs = data.getJSONObject("duration");
                         int s = secs.getInt("value");
@@ -123,23 +125,29 @@ public class FeedFragment extends Fragment {
                         final int hours = s/3600;
                     getCarDetails.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            for (DataSnapshot ds : dataSnapshot.getChildren())
-                            {
-                                User user = ds.getValue(User.class);
-                                double emission1 = calculateEmission(user.mpg,kilometers,user.gasType);
+                        public void onDataChange(@NonNull DataSnapshot dataSnapshot)
+                        {
+                                User user = dataSnapshot.getValue(User.class);
+                                String gasType = user.getGasType();
+                                Double mpg = Double.parseDouble(user.getMpg());
+                                double emission1 = calculateEmission(mpg,kilometers,gasType);
                                 int r = calculateOptimalSpeed(kilometers,hours);
-                                advisedSpeed.setText(String.valueOf(r));
-                                double emission2 = calculateEmissionfromOptimalSpeed(user.mpg,r,user.gasType);
+                                advisedSpeed.setText("Optimal Speed is 55");
+                                double emission2 = calculateEmissionfromOptimalSpeed(mpg,r,gasType,kilometers);
+                                Log.d("Emission2", String.valueOf(emission2));
                                 double value = calculateDifference(emission1,emission2);
-                                saveEmission(value);
-                            }
+                                double time = System.currentTimeMillis();
+                                HashMap<String,String> emission = new HashMap<>();
+                               // Log.d("Diference", String.valueOf(value));
+                                //emission.put("Emission",String.valueOf(saving));
+                                // getEmission.setValue(emission);
+
+
                         }
                         @Override
                         public void onCancelled(@NonNull DatabaseError databaseError) {
                         }
                     });
-                   // calculateSpeed(miles,hours);
                     Log.d("FeedFragment", String.valueOf(kilometers));
 
                 } catch (JSONException e) {
@@ -162,7 +170,6 @@ public class FeedFragment extends Fragment {
         return speed;
 
     }
-
     public double calculateEmission(double mpg,double distance,String fuel)
     {   //check the emission factors for each fuel for litres
         //convert miles to kilometers
@@ -185,16 +192,12 @@ public class FeedFragment extends Fragment {
         return emission;
     }
 
-    public void saveEmission(Double saving)
-    {
-        double time = System.currentTimeMillis();
-        getEmission.setValue(time,saving);
-    }
-
-
     public int calculateOptimalSpeed(Double distance, int time)
     {
         Double speed = calculateSpeed(distance, time);
+        DecimalFormat d = new DecimalFormat("#.##");
+        System.out.print(d.format(speed));
+        Log.d("Speed", speed.toString());
         int optimalSpeed = 0;
 
         if(speed>=55 && speed<=70)
@@ -214,18 +217,22 @@ public class FeedFragment extends Fragment {
         }
         if(speed<55)
         {
+            optimalSpeed = 55;
+        }
+        if(speed>70)
+        {
+            optimalSpeed = 65;
         }
         return optimalSpeed;
     }
-    public double calculateEmissionfromOptimalSpeed(double mpg,int optimalSpeed,String fuel,int distance)
+    public double calculateEmissionfromOptimalSpeed(double mpg,int optimalSpeed,String fuel,double distance)
     {
         Double emission = 0.0;
                 if(optimalSpeed == 60)
                 {
                     double value = (0.03*mpg)/100;
-                    mpg = mpg - value;
-                    double p = ((mpg*1.61) * 100)/4.5461;
-                    //do modifications to the switch statement
+                    double fmpg  = mpg - value;
+                    double p = ((fmpg*1.61) * 100)/4.5461;
                     double litres = p * distance/100;
                     switch(fuel)
                     {
@@ -241,8 +248,8 @@ public class FeedFragment extends Fragment {
                 else if(optimalSpeed == 65)
                 {
                     double value = (0.08*mpg)/100;
-                    mpg = mpg - value;
-                    double p = ((mpg*1.61)*100)/4.5461;
+                    double fmpg = mpg - value;
+                    double p = ((fmpg*1.61)*100)/4.5461;
                     double litres = p * distance/100;
                     switch(fuel)
                     {
@@ -257,8 +264,8 @@ public class FeedFragment extends Fragment {
                 else if(optimalSpeed == 70)
                 {
                     double value = (0.17*mpg)/100;
-                    mpg = mpg - value;
-                    double p = ((mpg*1.61)*100)/4.5461;
+                    double fmpg = mpg - value;
+                    double p = ((fmpg*1.61)*100)/4.5461;
                     double litres = p * distance/100;
                     switch(fuel)
                     {

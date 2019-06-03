@@ -56,21 +56,7 @@ public class MediaDisplayAdapter extends RecyclerView.Adapter<MediaDisplayAdapte
         myViewHolder.action_Description.setText(finalDesc);
         //myViewHolder.action_Img.setImageBitmap(finalImage);
         Glide.with(context).load(actions.get(i).getImage()).into(myViewHolder.action_Img);
-        
-        /**Picasso.get().load(actions.get(i).getImage()).placeholder(R.drawable.common_google_signin_btn_icon_dark).into(myViewHolder.action_Img, new Callback() {
-            @Override
-            public void onSuccess() {
 
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.d("MediaDisplay",e.toString());
-            }
-        });
-        Log.d("Url",actions.get(i).getImage());
-        //Picasso.with(context).load(actions.get(i).getImage()).resize(300,300).centerCrop().into(myViewHolder.action_Img);
-         **/
     }
     @Override
     public int getItemCount() {
