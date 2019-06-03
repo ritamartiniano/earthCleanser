@@ -115,7 +115,6 @@ public class ProgressFragment extends Fragment {
         xValues.add("Food");
         xValues.add("Transportation");
         xValues.add("Energy");
-        Log.d("Progress Fragment",String.valueOf(food));
         ArrayList<BarDataSet> barDataSets = new ArrayList<>();
         ArrayList<BarEntry> barEntries = new ArrayList<>();
         BarEntry one = new BarEntry(food,0);
